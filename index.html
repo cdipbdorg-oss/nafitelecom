@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>মেসার্স নাফি টেলিকম</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a73e8;
+    --primary-dark: #1557b0;
+    --primary-light: #e8f0fe;
+    --success: #0d904f;
+    --success-light: #e6f4ea;
+    --danger: #d93025;
+    --danger-light: #fce8e6;
+    --warning: #f29900;
+    --warning-light: #fef7e0;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --text-muted: #5f6368;
+    --border: #e0e0e0;
+    --sidebar-bg: #0d1b4b;
+    --sidebar-text: #c8d8ff;
+    --sidebar-active: #1a73e8;
+    --font: 'Noto Sans Bengali', 'Inter', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 240px; min-height: 100vh; background: var(--sidebar-bg);
+    display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100;
+    transition: width 0.3s;
+  }
+  .sidebar-brand {
+    padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .brand-icon {
+    width: 38px; height: 38px; background: var(--primary); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+  }
+  .brand-text h2 { color: #fff; font-size: 14px; font-weight: 700; line-height: 1.2; }
+  .brand-text p { color: var(--sidebar-text); font-size: 11px; }
+  .nav-group { padding: 8px 0; }
+  .nav-label { padding: 8px 16px 4px; font-size: 10px; color: rgba(200,216,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    color: var(--sidebar-text); cursor: pointer; transition: all 0.2s; border-radius: 0;
+    font-size: 14px; text-decoration: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .nav-item.active { background: var(--primary); color: #fff; }
+  .nav-icon { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; }
+
+  /* MAIN */
+  #main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-left h1 { font-size: 18px; font-weight: 600; }
+  .topbar-left p { font-size: 12px; color: var(--text-muted); }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .time-badge { background: var(--primary-light); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+  .user-avatar { width: 36px; height: 36px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; }
+
+  .content { padding: 24px; flex: 1; }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* LOGIN */
+  #login-page {
+    position: fixed; inset: 0; background: linear-gradient(135deg, #0d1b4b 0%, #1a3a8a 100%);
+    display: flex; align-items: center; justify-content: center; z-index: 9999;
+  }
+  .login-card {
+    background: #fff; border-radius: 16px; padding: 40px; width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .login-logo { text-align: center; margin-bottom: 24px; }
+  .login-logo .icon { font-size: 48px; margin-bottom: 8px; }
+  .login-logo h2 { font-size: 20px; font-weight: 700; color: #0d1b4b; }
+  .login-logo p { font-size: 13px; color: var(--text-muted); }
+  .login-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: var(--font); outline: none; transition: border 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+  .btn {
+    padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px;
+    font-family: var(--font); font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { opacity: 0.9; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { opacity: 0.9; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .login-err { color: var(--danger); font-size: 13px; text-align: center; display: none; }
+
+  /* STATS CARDS */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 16px;
+  }
+  .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .stat-info h3 { font-size: 22px; font-weight: 700; }
+  .stat-info p { font-size: 13px; color: var(--text-muted); }
+
+  /* CARDS */
+  .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
+  .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+  .section-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f5f7fa; padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbff; }
+
+  /* BADGE */
+  .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-success { background: var(--success-light); color: var(--success); }
+  .badge-danger { background: var(--danger-light); color: var(--danger); }
+  .badge-warning { background: var(--warning-light); color: var(--warning); }
+  .badge-info { background: var(--primary-light); color: var(--primary); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+    display: none; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 16px; padding: 28px; width: 520px; max-height: 90vh; overflow-y: auto; }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* SEARCH */
+  .search-bar { position: relative; }
+  .search-bar input { padding-left: 36px !important; }
+  .search-bar::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; }
+
+  /* BILL */
+  .bill-item-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .bill-summary { background: var(--primary-light); border-radius: 8px; padding: 16px; margin-top: 12px; }
+  .bill-summary-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+  .bill-summary-row.total { font-weight: 700; font-size: 16px; color: var(--primary); border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px; }
+
+  /* PRINT */
+  .receipt-box { font-family: var(--font); max-width: 300px; margin: 0 auto; padding: 16px; border: 1px dashed var(--border); border-radius: 8px; font-size: 12px; }
+  .receipt-box h3 { text-align: center; font-size: 16px; margin-bottom: 4px; }
+  .receipt-box p { text-align: center; color: var(--text-muted); font-size: 11px; margin-bottom: 12px; }
+  .receipt-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .receipt-divider { border: none; border-top: 1px dashed var(--border); margin: 8px 0; }
+
+  /* CHART BAR */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 120px; }
+  .bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar { width: 100%; background: var(--primary); border-radius: 4px 4px 0 0; transition: height 0.5s; }
+  .bar-label { font-size: 10px; color: var(--text-muted); }
+  .bar-val { font-size: 10px; font-weight: 600; color: var(--primary); }
+
+  /* ALERT */
+  .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+  .alert-warning { background: var(--warning-light); color: #7a4000; border-left: 3px solid var(--warning); }
+  .alert-success { background: var(--success-light); color: var(--success); }
+
+  /* RESPONSIVE */
+  @media(max-width: 900px) {
+    #sidebar { width: 60px; }
+    .brand-text, .nav-label, .nav-item span { display: none; }
+    #main { margin-left: 60px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .section-grid { grid-template-columns: 1fr; }
+  }
+
+  .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .lang-toggle { display: flex; gap: 4px; }
+  .lang-btn { padding: 4px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; cursor: pointer; background: transparent; font-family: var(--font); }
+  .lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  input[type="number"] { -moz-appearance: textfield; }
+  .stock-low { color: var(--danger); font-weight: 600; }
+  .profit-positive { color: var(--success); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">📱</div>
+      <h2>মেসার্স নাফি টেলিকম</h2>
+      <p>Mesas Nafi Telecom — Management System</p>
+    </div>
+    <div class="login-form">
+      <div class="form-group">
+        <label>ইউজারনেম / Username</label>
+        <input type="text" id="login-user" placeholder="admin" />
+      </div>
+      <div class="form-group">
+        <label>পাসওয়ার্ড / Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••" />
+      </div>
+      <p class="login-err" id="login-err">❌ ভুল ইউজারনেম বা পাসওয়ার্ড!</p>
+      <button class="btn btn-primary" style="width:100%;padding:12px;" onclick="doLogin()">🔐 প্রবেশ করুন / Login</button>
+      <p style="text-align:center;font-size:11px;color:#999;">Default: admin / nafi123</p>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">📱</div>
+    <div class="brand-text">
+      <h2>নাফি টেলিকম</h2>
+      <p>Management System</p>
+    </div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">মূল মেনু</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">🏠</span><span>ড্যাশবোর্ড</span></div>
+    <div class="nav-item" onclick="showPage('sale',this)"><span class="nav-icon">🧾</span><span>বিক্রয় / বিল</span></div>
+    <div class="nav-item" onclick="showPage('stock',this)"><span class="nav-icon">📦</span><span>স্টক ম্যানেজমেন্ট</span></div>
+    <div class="nav-item" onclick="showPage('customers',this)"><span class="nav-icon">👥</span><span>কাস্টমার রেকর্ড</span></div>
+    <div class="nav-item" onclick="showPage('report',this)"><span class="nav-icon">📊</span><span>রিপোর্ট</span></div>
+  </div>
+  <div class="nav-group" style="margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);">
+    <div class="nav-item" onclick="doLogout()"><span class="nav-icon">🚪</span><span>লগআউট</span></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main" style="display:none;">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1 id="page-title">ড্যাশবোর্ড</h1>
+      <p id="page-sub">স্বাগতম, আজকের সারসংক্ষেপ দেখুন</p>
+    </div>
+    <div class="topbar-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="bn-btn" onclick="setLang('bn')">বাং</button>
+        <button class="lang-btn" id="en-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <div class="time-badge" id="clock">--:--</div>
+      <div class="user-avatar" title="Admin">A</div>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e8f0fe;">💰</div>
+          <div class="stat-info">
+            <h3 id="d-today-sale">৳০</h3>
+            <p id="d-ts-label">আজকের বিক্রয়</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e6f4ea;">🧾</div>
+          <div class="stat-info">
+            <h3 id="d-today-bills">০</h3>
+            <p id="d-tb-label">আজকের বিল সংখ্যা</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fef7e0;">📦</div>
+          <div class="stat-info">
+            <h3 id="d-products">০</h3>
+            <p id="d-p-label">মোট পণ্য</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fce8e6;">⚠️</div>
+          <div class="stat-info">
+            <h3 id="d-low-stock">০</h3>
+            <p id="d-ls-label">কম স্টক পণ্য</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-grid">
+        <div class="card">
+          <div class="card-title"><span id="recent-sales-title">সাম্প্রতিক বিক্রয়</span></div>
+          <div id="recent-sales-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span id="low-stock-title">কম স্টক পণ্য</span></div>
+          <div id="low-stock-list"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span id="weekly-chart-title">সাপ্তাহিক বিক্রয় (৳)</span></div>
+        <div class="bar-chart" id="weekly-chart"></div>
+      </div>
+    </div>
+
+    <!-- SALE PAGE -->
+    <div class="page" id="page-sale">
+      <div class="section-grid">
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="card-title">
+            <span id="new-bill-title">নতুন বিল তৈরি করুন</span>
+            <button class="btn btn-outline btn-sm" onclick="showBillHistory()">📋 <span id="bill-hist-btn">বিল ইতিহাস</span></button>
+          </div>
+
+          <div class="form-row" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label id="cust-name-label">কাস্টমার নাম</label>
+              <input type="text" id="bill-cust" placeholder="নাম লিখুন..." list="cust-list" />
+              <datalist id="cust-list"></datalist>
+            </div>
+            <div class="form-group">
+              <label id="cust-phone-label">ফোন নম্বর</label>
+              <input type="text" id="bill-phone" placeholder="01XXXXXXXXX" />
+            </div>
+          </div>
+
+          <div id="bill-items-container">
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 36px;gap:8px;margin-bottom:8px;">
+              <span style="font-size:12px;font-weight:600;color:var(--text-muted)" id="lbl-product">পণ্য</span>
+              <span style="font-size:12px;font-weight:600;color:var(--text-muted)" id="lbl-price">দাম (৳)</span>
+              <span style="font-size:12px;font-weight:600;color:var(--text-muted)" id="lbl-qty">পরিমাণ</span>
+              <span style="font-size:12px;font-weight:600;color:var(--text-muted)" id="lbl-subtotal">সাবটোটাল</span>
+              <span></span>
+            </div>
+            <div id="bill-rows"></div>
+          </div>
+
+          <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addBillRow()">➕ <span id="add-item-btn">আইটেম যোগ করুন</span></button>
+
+          <div class="bill-summary" id="bill-summary">
+            <div class="bill-summary-row">
+              <span id="lbl-subtotal-sum">সাবটোটাল:</span>
+              <span id="bill-subtotal">৳০</span>
+            </div>
+            <div class="bill-summary-row">
+              <span id="lbl-discount">ছাড়:</span>
+              <span style="display:flex;gap:8px;align-items:center;">
+                <input type="number" id="bill-discount" value="0" min="0" style="width:70px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;" oninput="calcBill()" />
+                <span id="disc-unit">৳</span>
+              </span>
+            </div>
+            <div class="bill-summary-row total">
+              <span id="lbl-total">মোট:</span>
+              <span id="bill-total">৳০</span>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:16px;">
+            <button class="btn btn-success" onclick="saveBill()">✅ <span id="save-bill-btn">বিল সেভ করুন</span></button>
+            <button class="btn btn-outline" onclick="printBill()">🖨️ <span id="print-bill-btn">প্রিন্ট</span></button>
+            <button class="btn btn-outline" onclick="clearBill()">🗑️ <span id="clear-bill-btn">মুছুন</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BILL HISTORY -->
+      <div class="card" id="bill-history-card" style="display:none;">
+        <div class="card-title"><span id="bill-hist-title">বিল ইতিহাস</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th id="th-billno">বিল নং</th>
+                <th id="th-date">তারিখ</th>
+                <th id="th-cust">কাস্টমার</th>
+                <th id="th-amount">পরিমাণ</th>
+                <th id="th-action">একশন</th>
+              </tr>
+            </thead>
+            <tbody id="bill-hist-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOCK PAGE -->
+    <div class="page" id="page-stock">
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <div class="search-bar" style="flex:1;">
+          <input type="text" id="stock-search" placeholder="পণ্য খুঁজুন..." oninput="renderStock()" style="width:100%;padding:10px 14px;" />
+        </div>
+        <button class="btn btn-primary" onclick="openStockModal()">➕ <span id="add-product-btn">নতুন পণ্য</span></button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th id="th-pid">#</th>
+                <th id="th-pname">পণ্যের নাম</th>
+                <th id="th-cat">ক্যাটাগরি</th>
+                <th id="th-buy">ক্রয় মূল্য</th>
+                <th id="th-sell">বিক্রয় মূল্য</th>
+                <th id="th-stock">স্টক</th>
+                <th id="th-paction">একশন</th>
+              </tr>
+            </thead>
+            <tbody id="stock-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS PAGE -->
+    <div class="page" id="page-customers">
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <div class="search-bar" style="flex:1;">
+          <input type="text" id="cust-search" placeholder="কাস্টমার খুঁজুন..." oninput="renderCustomers()" style="width:100%;padding:10px 14px;" />
+        </div>
+        <button class="btn btn-primary" onclick="openCustModal()">➕ <span id="add-cust-btn">নতুন কাস্টমার</span></button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th id="th-cname">নাম</th>
+                <th id="th-cphone">ফোন</th>
+                <th id="th-caddr">ঠিকানা</th>
+                <th id="th-ctotal">মোট ক্রয়</th>
+                <th id="th-caction">একশন</th>
+              </tr>
+            </thead>
+            <tbody id="cust-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT PAGE -->
+    <div class="page" id="page-report">
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
+        <div class="form-group" style="margin:0;">
+          <select id="report-period" onchange="renderReport()" style="padding:10px 14px;">
+            <option value="today" id="opt-today">আজ</option>
+            <option value="week" id="opt-week">এই সপ্তাহ</option>
+            <option value="month" id="opt-month" selected>এই মাস</option>
+            <option value="all" id="opt-all">সব</option>
+          </select>
+        </div>
+        <button class="btn btn-outline" onclick="window.print()">🖨️ <span id="print-report-btn">রিপোর্ট প্রিন্ট</span></button>
+      </div>
+
+      <div class="stats-grid" id="report-stats"></div>
+
+      <div class="card">
+        <div class="card-title"><span id="report-detail-title">বিস্তারিত বিক্রয় রিপোর্ট</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th id="rth-no">বিল নং</th>
+                <th id="rth-date">তারিখ</th>
+                <th id="rth-cust">কাস্টমার</th>
+                <th id="rth-items">আইটেম</th>
+                <th id="rth-amount">মোট</th>
+              </tr>
+            </thead>
+            <tbody id="report-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STOCK MODAL -->
+<div class="modal-overlay" id="stock-modal">
+  <div class="modal">
+    <div class="modal-title" id="stock-modal-title">নতুন পণ্য যোগ করুন</div>
+    <input type="hidden" id="stock-edit-id" />
+    <div class="form-row">
+      <div class="form-group">
+        <label id="lbl-pname">পণ্যের নাম</label>
+        <input type="text" id="s-name" placeholder="যেমন: Grameenphone SIM" />
+      </div>
+      <div class="form-group">
+        <label id="lbl-pcat">ক্যাটাগরি</label>
+        <select id="s-cat">
+          <option>সিম কার্ড</option>
+          <option>মোবাইল ফোন</option>
+          <option>অ্যাক্সেসরিজ</option>
+          <option>রিচার্জ</option>
+          <option>ইন্টারনেট প্যাকেজ</option>
+          <option>মেমোরি কার্ড</option>
+          <option>অন্যান্য</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label id="lbl-buyprice">ক্রয় মূল্য (৳)</label>
+        <input type="number" id="s-buy" placeholder="0" min="0" />
+      </div>
+      <div class="form-group">
+        <label id="lbl-sellprice">বিক্রয় মূল্য (৳)</label>
+        <input type="number" id="s-sell" placeholder="0" min="0" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label id="lbl-qty2">স্টক পরিমাণ</label>
+        <input type="number" id="s-qty" placeholder="0" min="0" />
+      </div>
+      <div class="form-group">
+        <label id="lbl-min-stock">সর্বনিম্ন স্টক সীমা</label>
+        <input type="number" id="s-min" placeholder="5" min="0" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('stock-modal')" id="cancel-btn">বাতিল</button>
+      <button class="btn btn-primary" onclick="saveProduct()" id="save-product-btn">সেভ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER MODAL -->
+<div class="modal-overlay" id="cust-modal">
+  <div class="modal">
+    <div class="modal-title" id="cust-modal-title">নতুন কাস্টমার</div>
+    <input type="hidden" id="cust-edit-id" />
+    <div class="form-row">
+      <div class="form-group">
+        <label id="lbl-cname2">নাম</label>
+        <input type="text" id="c-name" placeholder="কাস্টমারের নাম" />
+      </div>
+      <div class="form-group">
+        <label id="lbl-cphone2">ফোন</label>
+        <input type="text" id="c-phone" placeholder="01XXXXXXXXX" />
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label id="lbl-caddr2">ঠিকানা</label>
+      <input type="text" id="c-addr" placeholder="গ্রাম/মহল্লা, উপজেলা" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('cust-modal')">বাতিল</button>
+      <button class="btn btn-primary" onclick="saveCustomer()">সেভ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="modal-overlay" id="receipt-modal">
+  <div class="modal" style="max-width:360px;">
+    <div id="receipt-content"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('receipt-modal')">বন্ধ করুন</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ প্রিন্ট</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== DATA ==========
+let state = {
+  lang: 'bn',
+  products: [],
+  customers: [],
+  bills: [],
+  nextBillNo: 1001,
+  billItems: []
+};
+
+const CREDENTIALS = { user: 'admin', pass: 'nafi123' };
+
+// ========== TRANSLATIONS ==========
+const T = {
+  bn: {
+    dashboard: 'ড্যাশবোর্ড', dashSub: 'স্বাগতম, আজকের সারসংক্ষেপ দেখুন',
+    sale: 'বিক্রয় / বিল', saleSub: 'নতুন বিল তৈরি করুন',
+    stock: 'স্টক ম্যানেজমেন্ট', stockSub: 'পণ্য ও স্টক পরিচালনা',
+    customers: 'কাস্টমার রেকর্ড', custSub: 'কাস্টমার তথ্য সংরক্ষণ',
+    report: 'রিপোর্ট', reportSub: 'দৈনিক ও মাসিক রিপোর্ট',
+  },
+  en: {
+    dashboard: 'Dashboard', dashSub: 'Welcome, see today\'s overview',
+    sale: 'Sales / Bill', saleSub: 'Create a new bill',
+    stock: 'Stock Management', stockSub: 'Manage products & stock',
+    customers: 'Customer Records', custSub: 'Save customer info',
+    report: 'Report', reportSub: 'Daily & monthly reports',
+  }
+};
+
+// ========== SAMPLE DATA ==========
+function loadSampleData() {
+  if (state.products.length === 0) {
+    state.products = [
+      { id: 1, name: 'Grameenphone SIM', cat: 'সিম কার্ড', buy: 10, sell: 50, qty: 45, min: 10 },
+      { id: 2, name: 'Robi SIM', cat: 'সিম কার্ড', buy: 10, sell: 50, qty: 3, min: 10 },
+      { id: 3, name: 'Samsung Galaxy A15', cat: 'মোবাইল ফোন', buy: 14000, sell: 16500, qty: 5, min: 2 },
+      { id: 4, name: 'Xiaomi Redmi 13C', cat: 'মোবাইল ফোন', buy: 11000, sell: 13500, qty: 8, min: 2 },
+      { id: 5, name: 'Mobile Back Cover', cat: 'অ্যাক্সেসরিজ', buy: 80, sell: 150, qty: 25, min: 5 },
+      { id: 6, name: 'Tempered Glass', cat: 'অ্যাক্সেসরিজ', buy: 40, sell: 80, qty: 2, min: 10 },
+      { id: 7, name: 'Charger 20W', cat: 'অ্যাক্সেসরিজ', buy: 200, sell: 380, qty: 12, min: 5 },
+    ];
+    state.customers = [
+      { id: 1, name: 'রহিম মিয়া', phone: '01711223344', addr: 'বিরামপুর সদর', total: 0 },
+      { id: 2, name: 'করিম সাহেব', phone: '01812345678', addr: 'চাঁদপুর, বিরামপুর', total: 0 },
+    ];
+    const today = new Date().toISOString().split('T')[0];
+    state.bills = [
+      { id: 1001, date: today, cust: 'রহিম মিয়া', phone: '01711223344', items: [{name:'Grameenphone SIM',qty:2,price:50}], discount:0, total:100 },
+      { id: 1002, date: today, cust: 'করিম সাহেব', phone: '01812345678', items: [{name:'Mobile Back Cover',qty:1,price:150},{name:'Tempered Glass',qty:1,price:80}], discount:10, total:220 },
+    ];
+    state.nextBillNo = 1003;
+  }
+}
+
+// ========== AUTH ==========
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('main').style.display = 'flex';
+    loadSampleData();
+    initBillRows();
+    renderDashboard();
+    renderStock();
+    renderCustomers();
+    renderReport();
+    startClock();
+  } else {
+    const e = document.getElementById('login-err');
+    e.style.display = 'block';
+    setTimeout(() => e.style.display = 'none', 3000);
+  }
+}
+document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function doLogout() {
+  if (confirm('লগআউট করবেন?')) {
+    document.getElementById('login-page').style.display = 'flex';
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+  }
+}
+
+// ========== CLOCK ==========
+function startClock() {
+  setInterval(() => {
+    const n = new Date();
+    document.getElementById('clock').textContent = n.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
+  }, 1000);
+}
+
+// ========== NAV ==========
+function showPage(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles = { dashboard:['ড্যাশবোর্ড','Dashboard'], sale:['বিক্রয় / বিল','Sales / Bill'], stock:['স্টক ম্যানেজমেন্ট','Stock Management'], customers:['কাস্টমার রেকর্ড','Customer Records'], report:['রিপোর্ট','Report'] };
+  const subs = { dashboard:['আজকের সারসংক্ষেপ','Today\'s overview'], sale:['নতুন বিল তৈরি','Create new bill'], stock:['পণ্য পরিচালনা','Manage products'], customers:['কাস্টমার তথ্য','Customer info'], report:['বিক্রয় রিপোর্ট','Sales report'] };
+  const l = state.lang === 'bn' ? 0 : 1;
+  document.getElementById('page-title').textContent = (titles[page]||[page,page])[l];
+  document.getElementById('page-sub').textContent = (subs[page]||['',''])[l];
+  if(page==='dashboard') renderDashboard();
+  if(page==='stock') renderStock();
+  if(page==='customers') renderCustomers();
+  if(page==='report') renderReport();
+}
+
+// ========== LANG ==========
+function setLang(lang) {
+  state.lang = lang;
+  document.getElementById('bn-btn').className = 'lang-btn' + (lang==='bn'?' active':'');
+  document.getElementById('en-btn').className = 'lang-btn' + (lang==='en'?' active':'');
+}
+
+// ========== DASHBOARD ==========
+function renderDashboard() {
+  const today = new Date().toISOString().split('T')[0];
+  const todayBills = state.bills.filter(b => b.date === today);
+  const todaySale = todayBills.reduce((s,b) => s+b.total, 0);
+  const lowStock = state.products.filter(p => p.qty <= p.min);
+
+  document.getElementById('d-today-sale').textContent = '৳'+todaySale.toLocaleString();
+  document.getElementById('d-today-bills').textContent = todayBills.length;
+  document.getElementById('d-products').textContent = state.products.length;
+  document.getElementById('d-low-stock').textContent = lowStock.length;
+
+  // Recent sales
+  const rs = document.getElementById('recent-sales-list');
+  if (state.bills.length === 0) {
+    rs.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>কোনো বিক্রয় নেই</p></div>';
+  } else {
+    const last5 = [...state.bills].reverse().slice(0,5);
+    rs.innerHTML = '<div class="table-wrap"><table><tr><th>#</th><th>কাস্টমার</th><th>মোট</th></tr>' +
+      last5.map(b => `<tr><td>#${b.id}</td><td>${b.cust}</td><td class="profit-positive">৳${b.total}</td></tr>`).join('') +
+      '</table></div>';
+  }
+
+  // Low stock list
+  const ll = document.getElementById('low-stock-list');
+  if (lowStock.length === 0) {
+    ll.innerHTML = '<div class="alert alert-success">✅ সব পণ্যের পর্যাপ্ত স্টক আছে</div>';
+  } else {
+    ll.innerHTML = '<div class="table-wrap"><table><tr><th>পণ্য</th><th>স্টক</th></tr>' +
+      lowStock.map(p => `<tr><td>${p.name}</td><td class="stock-low">${p.qty}</td></tr>`).join('') +
+      '</table></div>';
+  }
+
+  // Weekly chart
+  const days = ['শনি','রবি','সোম','মঙ্গল','বুধ','বৃহ','শুক্র'];
+  const enDays = ['Sat','Sun','Mon','Tue','Wed','Thu','Fri'];
+  const chart = document.getElementById('weekly-chart');
+  const dayTotals = days.map((_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (6-i));
+    const ds = d.toISOString().split('T')[0];
+    return state.bills.filter(b=>b.date===ds).reduce((s,b)=>s+b.total,0);
+  });
+  const maxVal = Math.max(...dayTotals, 1);
+  const l = state.lang === 'bn' ? days : enDays;
+  chart.innerHTML = dayTotals.map((v,i) =>
+    `<div class="bar-item">
+      <span class="bar-val">${v>0?'৳'+v:''}</span>
+      <div class="bar" style="height:${Math.max(10,(v/maxVal)*100)}px;"></div>
+      <span class="bar-label">${l[i]}</span>
+    </div>`
+  ).join('');
+}
+
+// ========== BILL ==========
+let billRowCount = 0;
+function initBillRows() {
+  document.getElementById('bill-rows').innerHTML = '';
+  billRowCount = 0;
+  addBillRow();
+  refreshCustDatalist();
+}
+
+function addBillRow() {
+  billRowCount++;
+  const id = billRowCount;
+  const productOptions = state.products.map(p => `<option value="${p.name}" data-price="${p.sell}">${p.name} (৳${p.sell})</option>`).join('');
+  const row = document.createElement('div');
+  row.className = 'bill-item-row'; row.id = 'brow-'+id;
+  row.innerHTML = `
+    <select onchange="fillBillPrice(${id},this)" style="padding:8px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font)">
+      <option value="">-- পণ্য বেছে নিন --</option>${productOptions}
+    </select>
+    <input type="number" id="bprice-${id}" placeholder="৳" min="0" oninput="calcBill()" style="padding:8px;border:1px solid var(--border);border-radius:6px;font-size:13px;" />
+    <input type="number" id="bqty-${id}" value="1" min="1" oninput="calcBill()" style="padding:8px;border:1px solid var(--border);border-radius:6px;font-size:13px;" />
+    <span id="bsub-${id}" style="font-size:13px;font-weight:600;color:var(--primary);">৳০</span>
+    <button onclick="removeBillRow(${id})" style="background:var(--danger-light);color:var(--danger);border:none;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:14px;">✕</button>
+  `;
+  document.getElementById('bill-rows').appendChild(row);
+}
+
+function fillBillPrice(id, sel) {
+  const opt = sel.options[sel.selectedIndex];
+  const price = opt.getAttribute('data-price');
+  if (price) document.getElementById('bprice-'+id).value = price;
+  calcBill();
+}
+
+function removeBillRow(id) {
+  const el = document.getElementById('brow-'+id);
+  if (el) el.remove();
+  calcBill();
+}
+
+function calcBill() {
+  let sub = 0;
+  for (let i = 1; i <= billRowCount; i++) {
+    const pEl = document.getElementById('bprice-'+i);
+    const qEl = document.getElementById('bqty-'+i);
+    const sEl = document.getElementById('bsub-'+i);
+    if (!pEl) continue;
+    const p = parseFloat(pEl.value)||0, q = parseInt(qEl.value)||1;
+    const s = p*q; sub += s;
+    if(sEl) sEl.textContent = '৳'+s;
+  }
+  const disc = parseFloat(document.getElementById('bill-discount').value)||0;
+  const total = Math.max(0, sub - disc);
+  document.getElementById('bill-subtotal').textContent = '৳'+sub;
+  document.getElementById('bill-total').textContent = '৳'+total;
+}
+
+function saveBill() {
+  const cust = document.getElementById('bill-cust').value.trim();
+  const phone = document.getElementById('bill-phone').value.trim();
+  if (!cust) { alert('কাস্টমারের নাম দিন!'); return; }
+  
+  const items = [];
+  for (let i = 1; i <= billRowCount; i++) {
+    const sel = document.querySelector('#brow-'+i+' select');
+    const pEl = document.getElementById('bprice-'+i);
+    const qEl = document.getElementById('bqty-'+i);
+    if (!sel || !pEl || !sel.value) continue;
+    items.push({ name: sel.value, price: parseFloat(pEl.value)||0, qty: parseInt(qEl.value)||1 });
+  }
+  if (items.length === 0) { alert('কমপক্ষে একটি পণ্য যোগ করুন!'); return; }
+
+  const discount = parseFloat(document.getElementById('bill-discount').value)||0;
+  const subtotal = items.reduce((s,it) => s+it.price*it.qty, 0);
+  const total = Math.max(0, subtotal - discount);
+  const today = new Date().toISOString().split('T')[0];
+
+  const bill = { id: state.nextBillNo++, date: today, cust, phone, items, discount, total };
+  state.bills.push(bill);
+
+  // update customer total
+  const ec = state.customers.find(c => c.phone === phone);
+  if (ec) ec.total = (ec.total||0) + total;
+
+  // update stock
+  items.forEach(it => {
+    const prod = state.products.find(p => p.name === it.name);
+    if (prod) prod.qty = Math.max(0, prod.qty - it.qty);
+  });
+
+  alert('✅ বিল #'+bill.id+' সেভ হয়েছে!');
+  showReceipt(bill);
+  clearBill();
+  renderDashboard();
+}
+
+function clearBill() {
+  document.getElementById('bill-cust').value = '';
+  document.getElementById('bill-phone').value = '';
+  document.getElementById('bill-discount').value = '0';
+  document.getElementById('bill-rows').innerHTML = '';
+  billRowCount = 0;
+  addBillRow();
+  calcBill();
+}
+
+function showReceipt(bill) {
+  const content = `
+    <div class="receipt-box">
+      <h3>মেসার্স নাফি টেলিকম</h3>
+      <p>বিরামপুর, দিনাজপুর | 01XXXXXXXXXX</p>
+      <hr class="receipt-divider"/>
+      <div class="receipt-row"><span>বিল নং:</span><span>#${bill.id}</span></div>
+      <div class="receipt-row"><span>তারিখ:</span><span>${bill.date}</span></div>
+      <div class="receipt-row"><span>কাস্টমার:</span><span>${bill.cust}</span></div>
+      ${bill.phone ? `<div class="receipt-row"><span>ফোন:</span><span>${bill.phone}</span></div>` : ''}
+      <hr class="receipt-divider"/>
+      <table style="width:100%;font-size:12px;">
+        <tr><th style="text-align:left">পণ্য</th><th>পরিমাণ</th><th style="text-align:right">মোট</th></tr>
+        ${bill.items.map(it => `<tr><td>${it.name}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">৳${it.price*it.qty}</td></tr>`).join('')}
+      </table>
+      <hr class="receipt-divider"/>
+      ${bill.discount > 0 ? `<div class="receipt-row"><span>ছাড়:</span><span>-৳${bill.discount}</span></div>` : ''}
+      <div class="receipt-row" style="font-weight:700;font-size:14px;"><span>মোট:</span><span>৳${bill.total}</span></div>
+      <hr class="receipt-divider"/>
+      <p style="text-align:center;margin-top:8px;">ধন্যবাদ আপনার ক্রয়ের জন্য!</p>
+    </div>`;
+  document.getElementById('receipt-content').innerHTML = content;
+  document.getElementById('receipt-modal').classList.add('open');
+}
+
+function printBill() {
+  const cust = document.getElementById('bill-cust').value.trim();
+  if (!cust) { alert('আগে বিল সেভ করুন!'); return; }
+  window.print();
+}
+
+function showBillHistory() {
+  const card = document.getElementById('bill-history-card');
+  card.style.display = card.style.display === 'none' ? 'block' : 'none';
+  renderBillHistory();
+}
+
+function renderBillHistory() {
+  const tbody = document.getElementById('bill-hist-body');
+  if (state.bills.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px">কোনো বিল নেই</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...state.bills].reverse().map(b =>
+    `<tr>
+      <td>#${b.id}</td>
+      <td>${b.date}</td>
+      <td>${b.cust}</td>
+      <td class="profit-positive">৳${b.total}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="showReceipt(state.bills.find(x=>x.id===${b.id}))">রসিদ</button></td>
+    </tr>`
+  ).join('');
+}
+
+function refreshCustDatalist() {
+  const dl = document.getElementById('cust-list');
+  dl.innerHTML = state.customers.map(c => `<option value="${c.name}">${c.name} — ${c.phone}</option>`).join('');
+}
+
+// ========== STOCK ==========
+let editProductId = null;
+function renderStock() {
+  const q = (document.getElementById('stock-search')?.value||'').toLowerCase();
+  const filtered = state.products.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
+  const tbody = document.getElementById('stock-body');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-muted)">কোনো পণ্য পাওয়া যায়নি</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map((p,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><strong>${p.name}</strong></td>
+      <td><span class="badge badge-info">${p.cat}</span></td>
+      <td>৳${p.buy}</td>
+      <td>৳${p.sell}</td>
+      <td class="${p.qty <= p.min ? 'stock-low' : ''}">${p.qty} ${p.qty<=p.min?'⚠️':''}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="editProduct(${p.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" style="margin-left:4px" onclick="deleteProduct(${p.id})">🗑️</button>
+      </td>
+    </tr>`).join('');
+}
+
+function openStockModal(id) {
+  editProductId = null;
+  document.getElementById('stock-edit-id').value = '';
+  document.getElementById('s-name').value = '';
+  document.getElementById('s-cat').value = 'সিম কার্ড';
+  document.getElementById('s-buy').value = '';
+  document.getElementById('s-sell').value = '';
+  document.getElementById('s-qty').value = '';
+  document.getElementById('s-min').value = '5';
+  document.getElementById('stock-modal-title').textContent = state.lang==='bn'?'নতুন পণ্য যোগ করুন':'Add New Product';
+  document.getElementById('stock-modal').classList.add('open');
+}
+
+function editProduct(id) {
+  const p = state.products.find(x => x.id === id);
+  if (!p) return;
+  editProductId = id;
+  document.getElementById('s-name').value = p.name;
+  document.getElementById('s-cat').value = p.cat;
+  document.getElementById('s-buy').value = p.buy;
+  document.getElementById('s-sell').value = p.sell;
+  document.getElementById('s-qty').value = p.qty;
+  document.getElementById('s-min').value = p.min;
+  document.getElementById('stock-modal-title').textContent = 'পণ্য এডিট করুন';
+  document.getElementById('stock-modal').classList.add('open');
+}
+
+function saveProduct() {
+  const name = document.getElementById('s-name').value.trim();
+  const cat = document.getElementById('s-cat').value;
+  const buy = parseFloat(document.getElementById('s-buy').value)||0;
+  const sell = parseFloat(document.getElementById('s-sell').value)||0;
+  const qty = parseInt(document.getElementById('s-qty').value)||0;
+  const min = parseInt(document.getElementById('s-min').value)||5;
+  if (!name) { alert('পণ্যের নাম দিন!'); return; }
+  if (editProductId) {
+    const p = state.products.find(x => x.id === editProductId);
+    if (p) Object.assign(p, {name,cat,buy,sell,qty,min});
+  } else {
+    const newId = (state.products.length>0 ? Math.max(...state.products.map(x=>x.id)) : 0) + 1;
+    state.products.push({id:newId, name, cat, buy, sell, qty, min});
+  }
+  closeModal('stock-modal');
+  renderStock();
+  renderDashboard();
+}
+
+function deleteProduct(id) {
+  if (confirm('এই পণ্য ডিলিট করবেন?')) {
+    state.products = state.products.filter(p => p.id !== id);
+    renderStock();
+    renderDashboard();
+  }
+}
+
+// ========== CUSTOMERS ==========
+function renderCustomers() {
+  const q = (document.getElementById('cust-search')?.value||'').toLowerCase();
+  const filtered = state.customers.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q));
+  const tbody = document.getElementById('cust-body');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text-muted)">কোনো কাস্টমার নেই</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map((c,i) => {
+    const custBills = state.bills.filter(b => b.phone === c.phone);
+    const total = custBills.reduce((s,b)=>s+b.total,0);
+    return `<tr>
+      <td>${i+1}</td>
+      <td><strong>${c.name}</strong></td>
+      <td>${c.phone}</td>
+      <td>${c.addr||'—'}</td>
+      <td class="profit-positive">৳${total}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="editCustomer(${c.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" style="margin-left:4px" onclick="deleteCustomer(${c.id})">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openCustModal() {
+  document.getElementById('cust-edit-id').value = '';
+  document.getElementById('c-name').value = '';
+  document.getElementById('c-phone').value = '';
+  document.getElementById('c-addr').value = '';
+  document.getElementById('cust-modal').classList.add('open');
+}
+
+function editCustomer(id) {
+  const c = state.customers.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('cust-edit-id').value = id;
+  document.getElementById('c-name').value = c.name;
+  document.getElementById('c-phone').value = c.phone;
+  document.getElementById('c-addr').value = c.addr||'';
+  document.getElementById('cust-modal').classList.add('open');
+}
+
+function saveCustomer() {
+  const eid = document.getElementById('cust-edit-id').value;
+  const name = document.getElementById('c-name').value.trim();
+  const phone = document.getElementById('c-phone').value.trim();
+  const addr = document.getElementById('c-addr').value.trim();
+  if (!name || !phone) { alert('নাম ও ফোন নম্বর দিন!'); return; }
+  if (eid) {
+    const c = state.customers.find(x => x.id == eid);
+    if (c) Object.assign(c, {name, phone, addr});
+  } else {
+    const newId = (state.customers.length>0 ? Math.max(...state.customers.map(x=>x.id)) : 0) + 1;
+    state.customers.push({id:newId, name, phone, addr, total:0});
+  }
+  closeModal('cust-modal');
+  renderCustomers();
+  refreshCustDatalist();
+}
+
+function deleteCustomer(id) {
+  if (confirm('এই কাস্টমার ডিলিট করবেন?')) {
+    state.customers = state.customers.filter(c => c.id !== id);
+    renderCustomers();
+  }
+}
+
+// ========== REPORT ==========
+function renderReport() {
+  const period = document.getElementById('report-period')?.value || 'month';
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  const monthStr = todayStr.slice(0,7);
+  const weekAgo = new Date(today); weekAgo.setDate(today.getDate()-7);
+
+  let filtered = state.bills;
+  if (period === 'today') filtered = state.bills.filter(b => b.date === todayStr);
+  else if (period === 'week') filtered = state.bills.filter(b => new Date(b.date) >= weekAgo);
+  else if (period === 'month') filtered = state.bills.filter(b => b.date.startsWith(monthStr));
+
+  const totalSale = filtered.reduce((s,b)=>s+b.total,0);
+  const billCount = filtered.length;
+  const avgBill = billCount > 0 ? Math.round(totalSale/billCount) : 0;
+  const totalItems = filtered.reduce((s,b)=>s+b.items.reduce((a,i)=>a+i.qty,0),0);
+
+  document.getElementById('report-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-icon" style="background:#e8f0fe;">💰</div><div class="stat-info"><h3>৳${totalSale.toLocaleString()}</h3><p>মোট বিক্রয়</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#e6f4ea;">🧾</div><div class="stat-info"><h3>${billCount}</h3><p>মোট বিল</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#fef7e0;">📊</div><div class="stat-info"><h3>৳${avgBill}</h3><p>গড় বিল মূল্য</p></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#e6f4ea;">📦</div><div class="stat-info"><h3>${totalItems}</h3><p>মোট পণ্য বিক্রি</p></div></div>
+  `;
+
+  const tbody = document.getElementById('report-body');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-muted)">কোনো ডেটা নেই</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...filtered].reverse().map(b =>
+    `<tr>
+      <td>#${b.id}</td>
+      <td>${b.date}</td>
+      <td>${b.cust}</td>
+      <td>${b.items.map(i=>i.name+(i.qty>1?' x'+i.qty:'')).join(', ')}</td>
+      <td class="profit-positive">৳${b.total}</td>
+    </tr>`
+  ).join('');
+}
+
+// ========== UTILS ==========
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
+});
+</script>
+</body>
+</html>

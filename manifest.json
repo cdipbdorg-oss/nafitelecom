@@ -1,0 +1,16 @@
+{
+  "name": "মাওয়া নাফি টেলিকম",
+  "short_name": "নাফি টেলিকম",
+  "description": "Mawa Nafi Telecom & Mobile Servicing Center",
+  "start_url": "./NafiTelecom.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d1b4b",
+  "theme_color": "#1a73e8",
+  "orientation": "any",
+  "lang": "bn",
+  "icons": [
+    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
